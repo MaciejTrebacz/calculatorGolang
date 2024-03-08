@@ -23,7 +23,7 @@ func NewTaxIncludedPriceJob(fm fileManager.FileManager, taxRate float64) *TaxInc
 
 // important are pointers to make sure we working on same class :D like singleton
 
-func (job *TaxIncludedPriceJob) Process() {
+func (job *TaxIncludedPriceJob) Process(doneChan chan bool, errorChan chan bool) {
 	job.LoadData()
 
 	result := make(map[string]string)
@@ -34,8 +34,8 @@ func (job *TaxIncludedPriceJob) Process() {
 
 	job.TaxIncludedPrices = result
 
-	job.IOManager.WriteJSON(job.TaxIncludedPrices)
-
+	job.IOManager.WriteJSON(job)
+	doneChan <- true
 }
 
 func (job *TaxIncludedPriceJob) LoadData() {
